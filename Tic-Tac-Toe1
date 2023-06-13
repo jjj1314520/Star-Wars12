@@ -1,0 +1,159 @@
+```python
+
+# 井字棋小游戏
+
+import tkinter as tk
+
+import tkinter.messagebox as msg
+
+# 创建一个窗口
+
+window = tk.Tk()
+
+# 设置窗口标题
+
+window.title("井字棋")
+
+# 设置窗口大小
+
+window.geometry("300x300")
+
+# 初始化当前玩家和棋盘状态
+
+current_player = "X"
+
+board = [["", "", ""], ["", "", ""], ["", "", ""]]
+
+# 定义一个函数检查是否有玩家赢了或平局
+
+def check_winner():
+
+    global board
+
+    # 检查每一行是否有连成三个相同的标记
+
+    for i in range(3):
+
+        if board[i][0] == board[i][1] == board[i][2] != "":
+
+            return board[i][0]
+
+    # 检查每一列是否有连成三个相同的标记
+
+    for j in range(3):
+
+        if board[0][j] == board[1][j] == board[2][j] != "":
+
+            return board[0][j]
+
+    # 检查两条对角线是否有连成三个相同的标记
+
+    if board[0][0] == board[1][1] == board[2][2] != "":
+
+        return board[0][0]
+
+    if board[0][2] == board[1][1] == board[2][0] != "":
+
+        return board[0][2]
+
+    # 检查是否还有空位
+
+    for i in range(3):
+
+        for j in range(3):
+
+            if board[i][j] == "":
+
+                return ""
+
+    # 如果没有空位，就是平局
+
+    return "Tie"
+
+# 定义一个函数处理玩家点击按钮的事件
+
+def click_button(row, col):
+
+    global current_player, board
+
+    # 获取点击的按钮对象
+
+    button = buttons[row][col]
+
+    # 如果按钮上没有标记，就可以放置当前玩家的标记
+
+    if button["text"] == "":
+
+        button["text"] = current_player
+
+        # 更新棋盘状态
+
+        board[row][col] = current_player
+
+        # 检查是否有玩家赢了或平局
+
+        winner = check_winner()
+
+        if winner != "":
+
+            # 如果有玩家赢了，就弹出提示框并结束游戏
+
+            if winner != "Tie":
+
+                msg.showinfo("游戏结束", f"恭喜{winner}赢了！")
+
+            else:
+
+                msg.showinfo("游戏结束", "平局！")
+
+            window.destroy()
+
+        else:
+
+            # 如果没有玩家赢了，就切换当前玩家
+
+            if current_player == "X":
+
+                current_player = "O"
+
+            else:
+
+                current_player = "X"
+
+            # 更新窗口标题显示当前玩家
+
+            window.title(f"井字棋 - {current_player}的回合")
+
+# 创建一个二维列表存储9个按钮对象
+
+buttons = []
+
+for i in range(3):
+
+    row_buttons = []
+
+    for j in range(3):
+
+        # 创建一个按钮对象，并设置其文本、字体、宽度、高度和背景色
+
+        button = tk.Button(window, text="", font=("Arial", 20), width=4, height=2, bg="white")
+
+        # 将按钮对象添加到二维列表中
+
+        row_buttons.append(button)
+
+        # 将按钮对象放置到窗口上，并设置其位置和间距
+
+        button.grid(row=i, column=j, padx=5, pady=5)
+
+        # 给按钮对象绑定点击事件，并传递其所在的行和列作为参数
+
+        button.config(command=lambda row=i, col=j: click_button(row, col))
+
+    buttons.append(row_buttons)
+
+# 启动窗口主循环
+
+window.mainloop()
+
+```
